@@ -1,6 +1,7 @@
+
 @font-face {
-    font-family: 'SJzongyi120';
-    src: '../../assets/font/SJzongyi120.ttf';
+    font-family: 'SJzongyi';
+    src: url('../../assets/font/SJzongyi120.ttf') format('ttf');
 }
 
 .title {
@@ -20,7 +21,7 @@
 
 }
 .beautiful-font {
-    font-family: SJzongyi120;
+    font-family: "SJzongyi" !important;
     color: green;
     font-size: 30px;
 }

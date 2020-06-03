@@ -1,6 +1,3 @@
-// 当前运行环境
-var DEVELOP_MODE = process.env.NODE_ENV === 'development';
-console.log(DEVELOP_MODE);
 var path = require('path');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -8,7 +5,7 @@ var SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 var { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 var ProgressBarPlugin = require('progress-bar-webpack-plugin');
 var MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
+var webpack = require('webpack');
 // 分析打包资源大小
 var smp = new SpeedMeasurePlugin({
     outputFormat: 'human'
@@ -20,7 +17,8 @@ module.exports= smp.wrap({
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: './static/js/[name].[hash:8].js'
+        filename: './static/js/[name].[hash:8].bundle.js',
+        chunkFilename: './static/js/[name].[hash:8].chunk[id].js'
     },
     resolve: {
         // 别名
@@ -36,7 +34,12 @@ module.exports= smp.wrap({
                 test: /\.(css|s[ac]ss)$/,
                 include: [path.resolve(__dirname, 'src')],
                 use: [
-                    { loader: DEVELOP_MODE ? 'style-loader' : MiniCssExtractPlugin.loader },
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            name: 'static/css/[name].[hash:8].css'
+                        }
+                    },
                     'css-loader',
                     'sass-loader'
                 ]
@@ -57,7 +60,7 @@ module.exports= smp.wrap({
                 use: ['html-loader']
             }, {
                 // 处理字体文件
-                test: /\.(eot|svg|ttf|woff|woff2)$/,
+                test: /\.(eot|ttf|woff2?)$/,
                 include: [path.resolve(__dirname, 'src/assets')],
                 use: {
                     loader: 'file-loader',
@@ -98,9 +101,11 @@ module.exports= smp.wrap({
         }),
         // 提取css|scss
         new MiniCssExtractPlugin({
-            filename:'/static/css/[name].[hash:8].css',
-            chunkFilename: '/static/css/[name].[hash:8].chunk[id].css',
-        })
+            filename: 'static/css/[name].[hash:8].css' ,
+            chunkFilename: 'static/css/[name].[hash:8].chunk[id].css',
+        }),
+        // 热更新
+        new webpack.HotModuleReplacementPlugin(),
       
     ],
     stats: { // 控制台显示统计信息
@@ -110,5 +115,11 @@ module.exports= smp.wrap({
         chunks: false,
         chunkModules: false
     }, 
+    // 配置源文件映射
+    devtool: 'nosources-source-map',
+    // devtool: 'inline-source-map',
+    devServer: {
+        hot: true
+    }
 
 })
