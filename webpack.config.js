@@ -1,21 +1,41 @@
 var path = require('path');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var { CleanWebpackPlugin } = require('clean-webpack-plugin');
-// const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
+const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 var { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-var DashboardPlugin = require('webpack-dashboard/plugin');
+var ProgressBarPlugin = require('progress-bar-webpack-plugin');
 // 分析打包资源大小
-// const smp = new SpeedMeasurePlugin({
-//     outputFormat: 'human'
-// })
-module.exports={
+const smp = new SpeedMeasurePlugin({
+    outputFormat: 'human'
+})
+module.exports= smp.wrap({
     entry: {
         main: './src/main.js'
     },
     output: {
         path: path.resolve(__dirname, 'dist')
     },
-
+    resolve: {
+        // 别名
+        alias: {
+            '@': path.resolve(__dirname, 'src'),
+            '#': path.resolve(__dirname, 'public'),
+        },
+    },
+    module: {
+        
+        rules: [
+            {   // 加载css, scss
+                test: /\.(css|s[ac]ss)$/,
+                include: [path.resolve(__dirname, 'src')],
+                use: [
+                    'style-loader',
+                    'css-loader',
+                    'sass-loader'
+                ]
+            }
+        ]
+    },
     plugins: [
         // 根据模板，自动生成html
         new HtmlWebpackPlugin({
@@ -39,8 +59,18 @@ module.exports={
             analyzerPort: 8899,
         }),
         // 优化控制台输出
-        new DashboardPlugin(),
+        new ProgressBarPlugin({
+            format: 'build [:bar] :percent (:elapsed seconds)',
+            clear: false, 
+            width: 60
+        })
     ],
-    stats: 'normal', // 控制台显示统计信息
+    stats: { // 控制台显示统计信息
+        colors: true,
+        modules: false,
+        children: false,
+        chunks: false,
+        chunkModules: false
+    }, 
 
-}
+})

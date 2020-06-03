@@ -4,8 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "serve": "webpack-dashboard webpack-dev-server",
-    "build": "webpack-dashboard webpack --mode production"
+    "serve": "webpack-dev-server",
+    "build": "webpack --mode production"
   },
   "dependencies": {
     "webpack": "^4.43.0",
@@ -14,8 +14,14 @@
   },
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^3.5.3",
     "html-loader": "^1.1.0",
     "html-webpack-plugin": "^4.3.0",
+    "node-sass": "^4.14.1",
+    "progress-bar-webpack-plugin": "^2.1.0",
+    "sass-loader": "^8.0.2",
+    "speed-measure-webpack-plugin": "^1.3.3",
+    "style-loader": "^1.2.1",
     "webpack-bundle-analyzer": "^3.8.0",
     "webpack-dashboard": "^3.2.0"
   }
