@@ -21,3 +21,9 @@
 
 ## 处理css|scss
     - yarn add node-sass style-loader css-loader sass-loader -D
+
+## 处理图片引用
+    - yarn add url-loader -D
+
+## 处理字体引用
+    - yarn add file-loader -D

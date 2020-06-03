@@ -3,3 +3,14 @@
     color: $color;
     user-select: none;
 }
+.img-one {
+    width: 100px;
+    height: 100px;
+    border: 1px solid red;
+    background: url('../../assets/img/五角星.png') no-repeat;
+}
+.img-two {
+    @extend .img-one;
+    background: url('../../assets/img/background.png');
+
+}

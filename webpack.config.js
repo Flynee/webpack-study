@@ -33,6 +33,20 @@ module.exports= smp.wrap({
                     'css-loader',
                     'sass-loader'
                 ]
+            }, {
+                // 处理css中引用图片
+                test: /\.(jpe?g|png|svg|gif)$/,
+                use: {
+                    loader: 'url-loader',
+                    options: {
+                        limit: 1024 * 8,
+                        name:'static/img/[name].[hash:8].[ext]'
+                    }
+                }
+            }, {
+                // 处理html中引用图片
+                test: /\.(htm|html)$/,
+                use: ['html-loader']
             }
         ]
     },
