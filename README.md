@@ -27,3 +27,6 @@
 
 ## 处理字体引用
     - yarn add file-loader -D
+
+## 提取css到单独文件
+    - yarn add mini-css-extrat-plugin -D

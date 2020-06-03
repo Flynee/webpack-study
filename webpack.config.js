@@ -1,19 +1,26 @@
+// 当前运行环境
+var DEVELOP_MODE = process.env.NODE_ENV === 'development';
+console.log(DEVELOP_MODE);
 var path = require('path');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
+var SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 var { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 var ProgressBarPlugin = require('progress-bar-webpack-plugin');
+var MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
 // 分析打包资源大小
-const smp = new SpeedMeasurePlugin({
+var smp = new SpeedMeasurePlugin({
     outputFormat: 'human'
 })
+
 module.exports= smp.wrap({
     entry: {
         main: './src/main.js'
     },
     output: {
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, 'dist'),
+        filename: './static/js/[name].[hash:8].js'
     },
     resolve: {
         // 别名
@@ -29,13 +36,14 @@ module.exports= smp.wrap({
                 test: /\.(css|s[ac]ss)$/,
                 include: [path.resolve(__dirname, 'src')],
                 use: [
-                    'style-loader',
+                    { loader: DEVELOP_MODE ? 'style-loader' : MiniCssExtractPlugin.loader },
                     'css-loader',
                     'sass-loader'
                 ]
             }, {
                 // 处理css中引用图片
                 test: /\.(jpe?g|png|svg|gif)$/,
+                include: [path.resolve(__dirname, 'src')],
                 use: {
                     loader: 'url-loader',
                     options: {
@@ -47,6 +55,16 @@ module.exports= smp.wrap({
                 // 处理html中引用图片
                 test: /\.(htm|html)$/,
                 use: ['html-loader']
+            }, {
+                // 处理字体文件
+                test: /\.(eot|svg|ttf|woff|woff2)$/,
+                include: [path.resolve(__dirname, 'src/assets')],
+                use: {
+                    loader: 'file-loader',
+                    options: {
+                       name: 'static/font/[name].[hash:8].[ext]',
+                    }
+                }
             }
         ]
     },
@@ -77,7 +95,13 @@ module.exports= smp.wrap({
             format: 'build [:bar] :percent (:elapsed seconds)',
             clear: false, 
             width: 60
+        }),
+        // 提取css|scss
+        new MiniCssExtractPlugin({
+            filename:'/static/css/[name].[hash:8].css',
+            chunkFilename: '/static/css/[name].[hash:8].chunk[id].css',
         })
+      
     ],
     stats: { // 控制台显示统计信息
         colors: true,

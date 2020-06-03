@@ -1,3 +1,8 @@
+@font-face {
+    font-family: 'SJzongyi120';
+    src: '../../assets/font/SJzongyi120.ttf';
+}
+
 .title {
     $color: blue;
     color: $color;
@@ -11,6 +16,11 @@
 }
 .img-two {
     @extend .img-one;
-    background: url('../../assets/img/background.png');
+    background: url('../../assets/img/background.png') no-repeat;
 
+}
+.beautiful-font {
+    font-family: SJzongyi120;
+    color: green;
+    font-size: 30px;
 }
